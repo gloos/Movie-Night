@@ -13,17 +13,12 @@ public let NetworkingErrorDomain = "com.gloos.movienight.NetworkingError"
 public let MissingHTTPResponseError: Int = 10
 public let UnexpectedResponseError: Int = 20
 
-typealias JSON = [String : AnyObject]
-typealias JSONTaskCompletion = (JSON?, HTTPURLResponse?, NSError?) -> Void
-typealias JSONTask = URLSessionDataTask
-
 
 //MARK: Enums
 
 enum APIResult<T> {
-    
     case Success(T)
-    case Failure(Error)
+    case Failure(NSError)
 }
 
 
@@ -44,8 +39,8 @@ protocol APIClient {
     var configuration: URLSessionConfiguration { get }
     var session: URLSession { get }
     
-    func JSONTaskWithRequest(request: NSURLRequest, completion: JSONTaskCompletion) -> JSONTask
-    func fetch<T: JSONDecodable>(request: NSURLRequest, parse: (JSON) -> T?, completion: (APIResult<T>) -> Void)
+    func JSONTaskWithRequest(request: URLRequest, completion: @escaping ([String : AnyObject]?, HTTPURLResponse?, NSError?) -> Void) -> URLSessionDataTask
+    func fetch<T: JSONDecodable>(request: NSURLRequest, parse: ([String : AnyObject]) -> T?, completion: (APIResult<T>) -> Void)
 }
 
 
@@ -53,7 +48,7 @@ protocol APIClient {
 
 extension APIClient {
     
-    func JSONTaskWithRequest(request: NSURLRequest, completion: @escaping JSONTaskCompletion) -> JSONTask {
+    func JSONTaskWithRequest(request: URLRequest, completion: @escaping ([String : AnyObject]?, HTTPURLResponse?, NSError?) -> Void) -> URLSessionDataTask {
         
         let task = session.dataTask(with: request as URLRequest) { data, response, error in
             
@@ -99,7 +94,7 @@ extension APIClient {
         return task
     }
     
-    func fetch<T>(request: NSURLRequest, parse: @escaping (JSON) -> T?, completion: @escaping (APIResult<T>) -> Void) {
+    func fetch<T>(request: URLRequest, parse: @escaping ([String : AnyObject]) -> T?, completion: @escaping (APIResult<T>) -> Void) {
         
         let task = JSONTaskWithRequest(request: request) { json, response, error in
             
