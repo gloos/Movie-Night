@@ -40,7 +40,7 @@ protocol APIClient {
     var session: URLSession { get }
     
     func JSONTaskWithRequest(request: URLRequest, completion: @escaping ([String : AnyObject]?, HTTPURLResponse?, NSError?) -> Void) -> URLSessionDataTask
-    func fetch<T: JSONDecodable>(request: NSURLRequest, parse: ([String : AnyObject]) -> T?, completion: (APIResult<T>) -> Void)
+    func fetch<T: JSONDecodable>(request: URLRequest, parse: ([String : AnyObject]) -> T?, completion: (APIResult<T>) -> Void)
 }
 
 

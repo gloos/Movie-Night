@@ -14,8 +14,12 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        MovieDBAPIClient().getPeople() { result in
-         print(result!)
+        let defaults = UserDefaults.standard
+        print("Attempting to open data")
+        if let savedPeople = defaults.object(forKey: "people") as? Data {
+            print("Attemping to load people")
+            let people = NSKeyedUnarchiver.unarchiveObject(with: savedPeople) as! [Person]
+            print("people: \(people)")
         }
     }
 

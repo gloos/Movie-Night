@@ -8,17 +8,25 @@
 
 import Foundation
 
-struct Person {
+class Person: NSObject, NSCoding {
     let name: String
     let id: String
-}
-
-extension Person {
+    
     init?(json: [String: AnyObject]) {
         guard let name = json["name"] as? String, let id = json["id"] as? Int else {
             return nil
         }
         self.name = name
         self.id = String(id)
+    }
+    
+    required init(coder aDecoder: NSCoder) {
+        name = aDecoder.decodeObject(forKey: "name") as! String
+        id = aDecoder.decodeObject(forKey: "id") as! String
+    }
+    
+    func encode(with aCoder: NSCoder) {
+        aCoder.encode(name, forKey: "name")
+        aCoder.encode(id, forKey: "id")
     }
 }

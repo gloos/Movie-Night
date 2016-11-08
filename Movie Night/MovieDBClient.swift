@@ -28,25 +28,10 @@ enum RequestTypes {
 }
 
 final class MovieDBAPIClient: APIClient {
-    internal func fetch<T : JSONDecodable>(request: NSURLRequest, parse: ([String : AnyObject]) -> T?, completion: (APIResult<T>) -> Void) {
+    internal func fetch<T : JSONDecodable>(request: URLRequest, parse: ([String : AnyObject]) -> T?, completion: (APIResult<T>) -> Void) {
         
     }
 
-//    internal func fetch<T : JSONDecodable>(request: NSURLRequest, parse: ([String : AnyObject]) -> T?, completion: (APIResult<T>) -> Void) {
-//        
-//    }
-//
-//    internal func JSONTaskWithRequest(request: NSURLRequest, completion: ([String : AnyObject]?, HTTPURLResponse?, NSError?) -> Void) -> URLSessionDataTask {
-//        
-//    }
-
-//     func fetch<T : JSONDecodable>(request: URLRequest, parse: ([String : AnyObject]) -> T?, completion: (APIResult<T>) -> Void) {
-//        
-//    }
-//
-//     func JSONTaskWithRequest(request: URLRequest, completion: ([String : AnyObject]?, HTTPURLResponse?, NSError?) -> Void) -> URLSessionDataTask {
-//        return URLSessionTask() as! URLSessionDataTask
-//    }
     
 
     var configuration: URLSessionConfiguration
@@ -60,13 +45,12 @@ final class MovieDBAPIClient: APIClient {
         self.init(configuration: .default)
     }
     
-    func getPeople(completion: @escaping (APIResult<[Person]>?) -> Void) {
+    func getPeople(completion: @escaping (APIResult<[Person]>) -> Void) {
         let request = URLRequest(url: RequestTypes.PopularPeople.completeURLWithPerson(id: nil))
         var testArray: [Person] = []
         fetch(request: request, parse: { json -> [Person] in
             
             if let results = json["results"] as? [[String: AnyObject]] {
-                print(results)
                 for person in results {
                     if let pers = Person(json: person) {
                         testArray.append(pers)
